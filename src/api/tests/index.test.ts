@@ -1,10 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import axios from "axios";
-import * as indexApi from "../index";
+import * as api from "../api";
 import type {
-  EventData,
   MarketData,
-  PublicProfileData,
   RawApiEventData,
   RawApiMarketData,
   RawApiPublicProfileData,
@@ -66,7 +64,7 @@ describe("index API", () => {
 
         mockAxiosInstanceGamma.get.mockResolvedValue({ data: mockRawEvent });
 
-        const result = await indexApi.getEvent("test-event");
+        const result = await api.getEvent("test-event");
 
         expect(result.id).toBe("event-123");
         expect(result.slug).toBe("test-event");
@@ -124,7 +122,7 @@ describe("index API", () => {
 
         mockAxiosInstanceGamma.get.mockResolvedValue({ data: mockRawMarket });
 
-        const result = await indexApi.getMarketById("market-123");
+        const result = await api.getMarketById("market-123");
 
         expect(result.id).toBe("market-123");
         expect(result.slug).toBe("test-market");
@@ -180,7 +178,7 @@ describe("index API", () => {
 
         mockAxiosInstanceGamma.get.mockResolvedValue({ data: mockRawMarket });
 
-        const result = await indexApi.getMarketBySlug("test-market");
+        const result = await api.getMarketBySlug("test-market");
 
         expect(result.id).toBe("market-123");
         expect(result.slug).toBe("test-market");
@@ -236,7 +234,7 @@ describe("index API", () => {
 
         mockAxiosInstanceGamma.get.mockResolvedValue({ data: mockRawMarket });
 
-        const result = await indexApi.getMarket("test-market");
+        const result = await api.getMarket("test-market");
 
         expect(result.id).toBe("market-123");
         expect(result.slug).toBe("test-market");
@@ -262,7 +260,7 @@ describe("index API", () => {
 
         mockAxiosInstanceGamma.get.mockResolvedValue({ data: mockProfile });
 
-        const result = await indexApi.getPublicProfileByAddress("0x123");
+        const result = await api.getPublicProfileByAddress("0x123");
 
         expect(result.proxyWallet).toBe("0x123");
         expect(result.name).toBe("Test User");
@@ -280,7 +278,7 @@ describe("index API", () => {
           data: [{ user: "0x123", value: 1000 }],
         });
 
-        const result = await indexApi.getUserPortfolioValue({
+        const result = await api.getUserPortfolioValue({
           address: "0x123",
           conditionIds: ["0xabc"],
         });
@@ -299,7 +297,7 @@ describe("index API", () => {
       it("should return undefined when response is empty", async () => {
         mockAxiosInstanceData.get.mockResolvedValue({ data: [] });
 
-        const result = await indexApi.getUserPortfolioValue({
+        const result = await api.getUserPortfolioValue({
           address: "0x123",
           conditionIds: ["0xabc"],
         });
@@ -310,7 +308,7 @@ describe("index API", () => {
       it("should return undefined when response is undefined", async () => {
         mockAxiosInstanceData.get.mockResolvedValue({ data: undefined });
 
-        const result = await indexApi.getUserPortfolioValue({
+        const result = await api.getUserPortfolioValue({
           address: "0x123",
           conditionIds: ["0xabc"],
         });
@@ -330,7 +328,7 @@ describe("index API", () => {
           },
         });
 
-        const result = await indexApi.getUserTraded("0x123");
+        const result = await api.getUserTraded("0x123");
 
         expect(result).toBe(5000);
         expect(mockAxiosInstanceData.get).toHaveBeenCalledWith("/traded", {
