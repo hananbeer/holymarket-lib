@@ -332,9 +332,8 @@ export type RawApiPublicSearchParams = {
 }
 
 export type RawApiPaginationInfo = {
-  page: number;
-  limit_per_type: number;
-  total: number;
+  hasMore: boolean;
+  totalResults: number;
 }
 
 export type RawApiPublicSearchResponse = {
@@ -349,5 +348,7 @@ export type SearchParamsSimple = {
   tags?: string[];
   sort?: string;
   ascending?: boolean;
-  // limit?: number; // TODO: add limit instead of numPages...
+  limit?: number; // TODO: add limit instead of numPages...
 }
+
+export type EventDataWithoutMarkets = Omit<EventData, 'markets'>;

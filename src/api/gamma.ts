@@ -4,14 +4,18 @@ import type { SeriesQueryParams, ListEventsQueryParams, RawApiSearchResults, Raw
 import { POLYMARKET_DOMAIN } from './types';
 
 let URL_GAMMA = `https://gamma-api.${POLYMARKET_DOMAIN}`;
+// let URL_GAMMA = `http://localhost:8000`;
 
 // TODO: this is so it can be proxified to bypass CORS
 const http = axios.create({
-  baseURL: URL_GAMMA
+  baseURL: URL_GAMMA,
+  paramsSerializer: {
+    indexes: null,
+  },
 });
 
 export async function get<T>(url: string, params?: Record<string, object>): Promise<T> {
-  const response = await http.get<T>(url, { params });
+  const response = await http.get<T>(url, params);
   return response.data;
 }
 
@@ -35,34 +39,12 @@ export async function getRawSearchEventsPage(params: RawApiPublicSearchParams): 
   return get<RawApiPublicSearchResponse>(`/public-search`, { params });
 }
 
-export async function* getRawSearchEvents(params: RawApiPublicSearchParams, numPages: number = 1, startPage: number = 0): AsyncGenerator<RawApiEventData> {
-  const axiosParams: RawApiPublicSearchParams = {
-    // must be present but space seems to work well
-    q: params.query ?? " ",
-    sort: params.sort ?? "id",
-    ascending: params.ascending ?? false,
-    events_tag: params.tags
-  }
-
-  for (let i = 0; i < numPages; i++) {
-    axiosParams.page = startPage + i;
-    const response = await http.get<RawApiSearchResults>(`/public-search`, { params: axiosParams });
-    const data = response.data;
-    if (!data.pagination.hasMore) {
-      break;
-    }
-    for (const event of data.events) {
-      yield event;
-    }
-  }
-}
-
 export async function getRawEventsListPage(params: ListEventsQueryParams): Promise<RawApiEventData[]> {
   const response = await http.get<RawApiEventData[]>(`/events`, { params });
   return response.data;
 }
 
-export async function* getRawAllEvents(params: ListEventsQueryParams & { batchSize?: number }): AsyncGenerator<EventData> {
+export async function* getRawEventsList(params: ListEventsQueryParams & { batchSize?: number }): AsyncGenerator<RawApiEventData> {
   let offset = 0;
   const set = new Set<string>();
   const limit = params.limit ?? 1000;

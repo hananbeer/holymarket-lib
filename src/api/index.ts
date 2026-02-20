@@ -1,7 +1,6 @@
-
-import type { EventData, TokenPriceHistory, MarketPriceHistory, SeriesQueryParams, ListEventsQueryParams, UserPosition, UserTrade, RawApiSearchResults, RawApiEventData, UserValue, RawApiSeriesData } from './types';
+import type { EventData, EventDataWithoutMarkets, ListEventsQueryParams, RawApiPublicSearchParams, SearchParamsSimple } from './types';
 import { canonicalizeEventData } from './helpers';
-import { getRawAllEvents, getRawEvent, getRawEventsList, getRawEventsListPage, getRawSearchEvents } from './gamma';
+import { getRawEventsList, getRawEvent, getRawEventsListPage, getRawSearchEventsPage } from './gamma';
 
 export async function getEvent(slugOrId: string): Promise<EventData> {
   const eventData = await getRawEvent(slugOrId);
@@ -9,19 +8,14 @@ export async function getEvent(slugOrId: string): Promise<EventData> {
   return canonicalizeEventData(eventData);
 }
 
-export async function getEventsListPage(params: ListEventsQueryParams): Promise<EventData[]> {
-  const rawEvents = await getRawEventsListPage(params);
-  return rawEvents.map(canonicalizeEventData);
-}
-
-export async function* getAllEvents(params: ListEventsQueryParams & { batchSize?: number }): AsyncGenerator<EventData> {
-  for await (const event of getRawAllEvents(params)) {
+export async function* getEventsList(params: ListEventsQueryParams & { batchSize?: number }): AsyncGenerator<EventData> {
+  for await (const event of getRawEventsList(params)) {
     yield canonicalizeEventData(event);
   }
 }
 
 export async function* getAllEventsActiveAndOpen(): AsyncGenerator<EventData> {
-  return getAllEvents({ active: true, closed: false });
+  return getEventsList({ active: true, closed: false });
 }
 
 export async function* getAllEventsUpdatedSince(
@@ -31,7 +25,7 @@ export async function* getAllEventsUpdatedSince(
   seriesSlug?: string
 }): AsyncGenerator<EventData> {
   // there is no way to limit by timestamp, so sort by updatedAt and stop when reached sinceTimestamp
-  for await (const event of getAllEvents({
+  for await (const event of getEventsList({
     order: "updatedAt",
     ascending: false,
     closed: params.closed
@@ -48,15 +42,32 @@ export async function* getAllEventsUpdatedSince(
   }
 }
 
-export async function* getSearchEvents(query: string, tags?: string[], numPages: number = 1000, startPage: number = 0): AsyncGenerator<EventData> {
-  for await (const event of getRawSearchEvents({ query, tags }, numPages, startPage)) {
-    yield canonicalizeEventData(event); // TODO: events - markets
+export async function* getSearchEvents(params: SearchParamsSimple): AsyncGenerator<EventData> {
+  const rawParams: RawApiPublicSearchParams = {
+    q: params.query ?? " ",
+    events_tag: params.tags,
+    sort: params.sort,
+    ascending: params.ascending,
   }
-}
 
-export async function* getSearchEventsByTag(tag: string, numPages: number = 1, startPage: number = 0): AsyncGenerator<EventData> {
-  // NOTE: this is hacky since must have some query but query=" " seems to work
-  for await (const event of getSearchEvents(" ", tag ? [tag] : undefined, numPages, startPage)) {
-    yield event;
+  let count = 0;
+  let page = 0;
+  const limit = params.limit ?? 10000;
+  while (count < limit) {
+    const response = await getRawSearchEventsPage({ ...rawParams, page });
+    if (!response.events) {
+      return;
+    }
+
+    for (const event of response.events) {
+      yield canonicalizeEventData(event);
+      count++;
+    }
+
+    if (!response.pagination.hasMore) {
+      return;
+    }
+
+    page++;
   }
 }
