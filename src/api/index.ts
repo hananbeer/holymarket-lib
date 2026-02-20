@@ -1,6 +1,13 @@
-import type { EventData, EventDataWithoutMarkets, ListEventsQueryParams, RawApiPublicSearchParams, SearchParamsSimple } from './types';
-import { canonicalizeEventData } from './helpers';
-import { getRawEventsList, getRawEvent, getRawEventsListPage, getRawSearchEventsPage } from './gamma';
+import type { EventData, EventDataWithoutMarkets, RawListEventsQueryParams, RawListMarketsQueryParams, RawApiPublicSearchParams, RawUserPositionsQueryParams, RawUserPosition, RawClosedPosition, RawUserClosedPositionsQueryParams, UserPortfolioValueQueryParams, UserValue, SearchParamsSimple, UserPositionsQueryParams, PublicProfileData, MarketData } from './types';
+import { canonicalizeEventData, canonicalMarketData } from './helpers';
+import { getRawEventsList, getRawEvent, getRawEventsListPage, getRawSearchEventsPage, getRawPublicProfileByAddress, getRawMarketsList, getRawMarket, getRawMarketsListPage, getRawMarketById, getRawMarketBySlug } from './gamma';
+import { getRawUserPositions, getRawUserClosedPositions, getRawUserPortfolioValue, getRawUserTraded } from './data';
+
+///
+/// GAMMA API
+///
+
+// EVENTS
 
 export async function getEvent(slugOrId: string): Promise<EventData> {
   const eventData = await getRawEvent(slugOrId);
@@ -8,7 +15,7 @@ export async function getEvent(slugOrId: string): Promise<EventData> {
   return canonicalizeEventData(eventData);
 }
 
-export async function* getEventsList(params: ListEventsQueryParams & { batchSize?: number }): AsyncGenerator<EventData> {
+export async function* getEventsList(params: RawListEventsQueryParams & { batchSize?: number }): AsyncGenerator<EventData> {
   for await (const event of getRawEventsList(params)) {
     yield canonicalizeEventData(event);
   }
@@ -71,3 +78,67 @@ export async function* getSearchEvents(params: SearchParamsSimple): AsyncGenerat
     page++;
   }
 }
+
+// MARKETS
+
+export async function getMarketById(id: string): Promise<MarketData> {
+  const marketData = await getRawMarketById(id);
+  return canonicalMarketData(marketData);
+}
+
+export async function getMarketBySlug(slug: string): Promise<MarketData> {
+  const marketData = await getRawMarketBySlug(slug);
+  return canonicalMarketData(marketData);
+}
+
+export async function getMarket(slugOrId: string): Promise<MarketData> {
+  const marketData = await getRawMarket(slugOrId);
+  return canonicalMarketData(marketData);
+}
+
+export async function* getMarketsList(params: RawListMarketsQueryParams & { batchSize?: number }): AsyncGenerator<MarketData> {
+  for await (const market of getRawMarketsList(params)) {
+    yield canonicalMarketData(market);
+  }
+}
+
+// PROFILE
+
+export async function getPublicProfileByAddress(address: string): Promise<PublicProfileData> {
+  // no changes to this endpoint
+  return getRawPublicProfileByAddress(address);
+}
+
+///
+/// DATA API
+///
+
+export async function* getUserPositions(params: UserPositionsQueryParams): AsyncGenerator<RawUserPosition> {
+  // this mainly just renames params for clarity
+  const rawParams: RawUserPositionsQueryParams = {
+    user: params.address,
+    market: params.conditionIds,
+    sizeThreshold: params.sizeThreshold,
+    redeemable: params.redeemable,
+    mergeable: params.mergeable,
+    limit: params.batchSize,
+    sortBy: params.sortBy,
+    sortDirection: params.sortDirection,
+    title: params.title,
+  };
+
+  return getRawUserPositions(rawParams);
+}
+
+export async function getUserPortfolioValue(params: UserPortfolioValueQueryParams): Promise<number | undefined> {
+  // basically rename and strip the response to scalar
+  const response = await getRawUserPortfolioValue({ user: params.address, markets: params.conditionIds });
+  return response?.[0].value;
+}
+
+export async function getUserTraded(address: string): Promise<number> {
+  // basically rename and strip the response to scalar
+  const response = await getRawUserTraded(address);
+  return response?.[0].traded;
+}
+

@@ -1,10 +1,9 @@
 
 import axios from 'axios';
-import type { SeriesQueryParams, ListEventsQueryParams, RawApiSearchResults, RawApiEventData, RawApiSeriesData, RawApiPublicSearchParams, SearchParamsSimple, RawApiPublicSearchResponse } from './types';
+import type { RawSeriesQueryParams, RawListEventsQueryParams, RawListMarketsQueryParams, RawApiSearchResults, RawApiEventData, RawApiSeriesData, RawApiMarketData, RawApiPublicProfileData, RawApiPublicSearchParams, SearchParamsSimple, RawApiPublicSearchResponse } from './types';
 import { POLYMARKET_DOMAIN } from './types';
 
 let URL_GAMMA = `https://gamma-api.${POLYMARKET_DOMAIN}`;
-// let URL_GAMMA = `http://localhost:8000`;
 
 // TODO: this is so it can be proxified to bypass CORS
 const http = axios.create({
@@ -14,10 +13,12 @@ const http = axios.create({
   },
 });
 
-export async function get<T>(url: string, params?: Record<string, object>): Promise<T> {
-  const response = await http.get<T>(url, params);
+export async function get<T>(url: string, params?: Record<string, any>): Promise<T> {
+  const response = await http.get<T>(url, { params });
   return response.data;
 }
+
+// EVENTS
 
 export async function getRawEventBySlug(slug: string): Promise<RawApiEventData> {
   return get<RawApiEventData>(`/events/slug/${slug}`);
@@ -36,18 +37,17 @@ export async function getRawEvent(slugOrId: string): Promise<RawApiEventData> {
 }
 
 export async function getRawSearchEventsPage(params: RawApiPublicSearchParams): Promise<RawApiPublicSearchResponse> {
-  return get<RawApiPublicSearchResponse>(`/public-search`, { params });
+  return get<RawApiPublicSearchResponse>(`/public-search`, params);
 }
 
-export async function getRawEventsListPage(params: ListEventsQueryParams): Promise<RawApiEventData[]> {
-  const response = await http.get<RawApiEventData[]>(`/events`, { params });
-  return response.data;
+export async function getRawEventsListPage(params: RawListEventsQueryParams): Promise<RawApiEventData[]> {
+  return get<RawApiEventData[]>(`/events`, params);
 }
 
-export async function* getRawEventsList(params: ListEventsQueryParams & { batchSize?: number }): AsyncGenerator<RawApiEventData> {
+export async function* getRawEventsList(params: RawListEventsQueryParams & { batchSize?: number }): AsyncGenerator<RawApiEventData> {
   let offset = 0;
   const set = new Set<string>();
-  const limit = params.limit ?? 1000;
+  const limit = params.limit ?? Infinity;
   while (set.size < limit) {
     const batch = await getRawEventsListPage({
       ...params,
@@ -77,28 +77,71 @@ export async function* getRawEventsList(params: ListEventsQueryParams & { batchS
   }
 }
 
-export async function getRawSeries(params: SeriesQueryParams): Promise<RawApiSeriesData[]> {
-  const axiosParams: Record<string, string> = {};
-  if (params.limit !== undefined) {
-    axiosParams.limit = params.limit.toString();
-  }
-  if (params.offset !== undefined) {
-    axiosParams.offset = params.offset.toString();
-  }
-  if (params.orderBy) { // TODO: can this can be passed as array?
-    axiosParams.orderBy = params.orderBy.join(',');
-  }
-  if (params.ascending !== undefined) {
-    axiosParams.ascending = params.ascending.toString();
-  }
-  if (params.closed) {
-    axiosParams.closed = params.closed.toString();
-  }
-  const response = await http.get<RawApiSeriesData[]>(`/series`, { params: axiosParams });
-  return response.data;
+export async function getRawSeriesPage(params: RawSeriesQueryParams): Promise<RawApiSeriesData[]> {
+  return get<RawApiSeriesData[]>(`/series`, params);
 }
 
-export async function getRawSeriesById(seriesId: string | number): Promise<RawApiSeriesData> {
-  const response = await http.get<RawApiSeriesData>(`/series/${seriesId}`);
-  return response.data;
+export async function getRawSeriesById(seriesId: string): Promise<RawApiSeriesData> {
+  return get<RawApiSeriesData>(`/series/${seriesId}`);
+}
+
+// MARKETS
+
+export async function getRawMarketsListPage(params?: RawListMarketsQueryParams): Promise<RawApiMarketData[]> {
+  return get<RawApiMarketData[]>(`/markets`, params);
+}
+
+export async function* getRawMarketsList(params: RawListMarketsQueryParams & { batchSize?: number }): AsyncGenerator<RawApiMarketData> {
+  let offset = 0;
+  const set = new Set<string>();
+  const limit = params.limit ?? Infinity;
+  while (set.size < limit) {
+    const batch = await getRawMarketsListPage({
+      ...params,
+      limit: params.batchSize ?? 500,
+      offset
+    });
+
+    if (batch.length === 0) {
+      return;
+    }
+
+    for (const market of batch) {
+      if (set.size >= limit) {
+        return;
+      }
+
+      if (set.has(market.id)) {
+        // apparently there are duplicates so dedup here
+        continue;
+      }
+
+      set.add(market.id);
+      yield market;
+    }
+
+    offset += batch.length;
+  }
+}
+
+export async function getRawMarketById(id: string): Promise<RawApiMarketData> {
+  return get<RawApiMarketData>(`/markets/${id}`);
+}
+
+export async function getRawMarketBySlug(slug: string): Promise<RawApiMarketData> {
+  return get<RawApiMarketData>(`/markets/slug/${slug}`);
+}
+
+export async function getRawMarket(slugOrId: string): Promise<RawApiMarketData> {
+  if (!isNaN(Number(slugOrId))) {
+    return getRawMarketById(slugOrId);
+  }
+
+  return getRawMarketBySlug(slugOrId as string);
+}
+
+// PROFILE
+
+export async function getRawPublicProfileByAddress(address: string): Promise<RawApiPublicProfileData> {
+  return get<RawApiPublicProfileData>(`/public-profile`, { address });
 }
