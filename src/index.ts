@@ -1,78 +1,92 @@
-import { getEvent, getEventsList, getSearchEvents, getUserPortfolioValue } from './api';
+// API exports
+export {
+  getEvent,
+  getEventsList,
+  getAllEventsActiveAndOpen,
+  getAllEventsUpdatedSince,
+  getSearchEvents,
+  getMarketById,
+  getMarketBySlug,
+  getMarket,
+  getMarketsList,
+  getPublicProfileByAddress,
+  getUserPositions,
+  getUserPortfolioValue,
+  getUserTraded,
+  getUserTrades,
+} from './api';
 
-import { getUserPositions, getUserTrades, getUserTraded } from './api';
-import { UserPositionsQueryParams } from './api/types';
-// import { getRawEventsList } from './api/gamma';
-import { getRawUserTraded } from './api/data'
+// API types
+export type {
+  EventData,
+  MarketData,
+  PublicProfileData,
+  RawUserPosition,
+  UserTrade,
+  UserTradesQueryParams,
+  UserPositionsQueryParams,
+  UserPortfolioValueQueryParams,
+  SearchParamsSimple,
+  RawListEventsQueryParams,
+  RawListMarketsQueryParams,
+} from './api/types';
 
-getUserPortfolioValue({ address: '0x1880E2b176Fbe2b59F425a8c912970850806381B' }).then(console.log)
-// getUserTraded('0x1880E2b176Fbe2b59F425a8c912970850806381B').then(console.log)
-// getRawUserTraded('0x1880E2b176Fbe2b59F425a8c912970850806381B').then(console.log)
+// Realtime exports
+export {
+  PolymarketChannelMarket,
+  PolymarketChannelUser,
+  PolymarketChannelBase,
+  MARKET_CHANNEL,
+  USER_CHANNEL,
+  WSS_URL,
+  PING_INTERVAL_MS,
+} from './realtime/channel';
 
-// for await (const trade of getUserTrades({
-//   address: '0x1880E2b176Fbe2b59F425a8c912970850806381B',
-//   limit: 10,
-//   batchSize: 10,
-// })) {
-//   console.log(trade);
-//   console.log('-----\n')
-// }
+export type {
+  ChannelConfig,
+} from './realtime/channel';
 
-// console.log('getRawUserPositions')
-// const params: UserPositionsQueryParams = {
-//   address: '0x1880E2b176Fbe2b59F425a8c912970850806381B',
-//   sizeThreshold: 0.1
-// }
+export {
+  PolymarketRealtimePriceFeed,
+  getPriceFeed,
+  tickerToSymbol,
+  SYMBOL_CHAINLINK_BTC_USD,
+  SYMBOL_CHAINLINK_ETH_USD,
+  SYMBOL_CHAINLINK_SOL_USD,
+  SYMBOL_CHAINLINK_XRP_USD,
+  SYMBOL_BINANCE_BTC_USDT,
+  SYMBOL_BINANCE_ETH_USDT,
+  SYMBOL_BINANCE_SOL_USDT,
+  SYMBOL_BINANCE_XRP_USDT,
+} from './realtime/pricefeed';
 
-// getUserPositions(params).then(positions => {
-//   console.log(positions);
-// }).catch(error => {
-//   console.error(error.stack);
-// });
+export type {
+  CryptoTicker,
+  CryptoAsset,
+  CryptoSymbol,
+  PricePayload,
+  PriceMessage,
+} from './realtime/pricefeed';
 
-// console.log('getSearchEvents')
-// try {
-//   for await (const event of getSearchEvents({ tags: ['elon-tweets'], limit: 10 })) {
-//     console.log('slug:', event.slug);
-//   }
-// } catch (error) {
-//   console.error(error.stack);
-// }
-
-// console.log('getEventsList')
-// for await (const event of getEventsList({
-//   active: true,
-//   closed: false,
-//   order: 'id',
-//   ascending: false,
-//   limit: 10
-// })) {
-//   console.log('id:', event.id);
-//   console.log('slug:', event.slug);
-//   console.log('markets:', event.markets.length);
-//   console.log('volume:', event.volume1yr);
-// }
-
-// console.log('getEvent')
-// getEvent('eth-updown-5m-1771676700').then(event => {
-//   console.log('id:', event.id);
-//   console.log('slug:', event.slug);
-//   console.log('markets:', event.markets.length);
-//   console.log('volume:', event.volume1yr);
-// }).catch(error => {
-//   console.error('error');
-// });
-
-// getRawEventsList({
-//   active: true,
-//   closed: false,
-//   order: 'id',
-//   ascending: false,
-//   limit: 10
-// }).then(response => {
-//   response.forEach(event => { 
-//     console.log(event.slug);
-//   });
-// }).catch(error => {
-//   console.error('error');
-// });
+// Realtime types
+export type {
+  ChannelMessage,
+  ChannelMessageRaw,
+  MarketChannelMessage,
+  UserChannelMessage,
+  TradeMessage,
+  OrderMessage,
+  BookMessage,
+  PriceChangeMessage,
+  TickSizeChangeMessage,
+  LastTradePriceMessage,
+  BestBidAskMessage,
+  NewMarketMessage,
+  MarketResolvedMessage,
+  OrderType,
+  Side,
+  OrderStatus,
+  TradeStatus,
+  TraderSide,
+  OrderAction,
+} from './realtime/types';
