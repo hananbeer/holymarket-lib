@@ -573,7 +573,8 @@ export function parseChannelMessage(message: ChannelMessageRaw): ChannelMessage 
       return parseNewMarketMessage(message);
     case 'market_resolved':
       return parseMarketResolvedMessage(message);
+    default:
+      const _exhaustive: never = message;
+      throw new Error(`Unknown event type: ${(_exhaustive as ChannelMessageRaw).event_type}`);
   }
-
-  throw new Error(`Unknown event type: ${message.event_type}`);
 }

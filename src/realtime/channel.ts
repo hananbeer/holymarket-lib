@@ -43,7 +43,9 @@ export abstract class PolymarketChannelBase {
 
       // single-shot error handler (to reject instead of errorCallback)
       ws.onerror = (event: WebSocket.ErrorEvent) => {
-        reject(new Error(event.error.message, { cause: event.error }));
+        const error = new Error(event?.error?.message);
+        (error as any).cause = event.error;
+        reject(error);
       };
 
       // single-shot close handler (to reject instead of closeCallback)
@@ -69,7 +71,9 @@ export abstract class PolymarketChannelBase {
         ws.onerror = (event: WebSocket.ErrorEvent) => {
           this.stopPing();
           console.error('_ channel error', event.error);
-          this.errorCallback?.(new Error(event.error.message, { cause: event.error }));
+          const error = new Error(event.error.message);
+          (error as any).cause = event.error;
+          this.errorCallback?.(error);
         };
 
         this.startPing();
@@ -94,7 +98,9 @@ export abstract class PolymarketChannelBase {
         } catch (error) {
           // TODO: log errors here
           // console.warn("Received non-JSON message:", message);
-          this.errorCallback?.(new Error(error.message, { cause: error }));
+          const err = new Error((error as Error).message);
+          (err as any).cause = error;
+          this.errorCallback?.(err);
         }
       });
     });

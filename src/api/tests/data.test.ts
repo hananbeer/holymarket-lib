@@ -637,6 +637,7 @@ describe("data API", () => {
     describe("happy path", () => {
       it("should fetch user traded amount", async () => {
         const mockTraded: RawTraded = {
+          user: "0x123",
           traded: 5000,
         };
 
@@ -789,6 +790,7 @@ describe("data API", () => {
             verified: false,
             volume: 5000,
             activeUsers: 10,
+            rank: "1",
           },
         ];
 
