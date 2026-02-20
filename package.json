@@ -14,7 +14,7 @@
     "test:coverage": "vitest --coverage"
   },
   "keywords": [],
-  "author": "",
+  "author": "high_byte",
   "license": "ISC",
   "dependencies": {
     "@polymarket/builder-relayer-client": "^0.0.8",
