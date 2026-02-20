@@ -1,0 +1,48 @@
+# Source files
+src/
+
+# Test files
+**/*.test.ts
+**/*.test.js
+**/*.test.d.ts
+**/*.spec.ts
+**/*.spec.js
+**/*.spec.d.ts
+**/tests/
+**/test/
+
+# Config files
+tsconfig.json
+vitest.config.ts
+*.config.js
+*.config.ts
+.eslintrc*
+.prettierrc*
+.editorconfig
+
+# Build test files
+build/**/tests/
+build/**/*.test.js
+build/**/*.test.d.ts
+
+# Development files
+node_modules/
+.pnpm-store/
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+.git/
+.gitignore
+.DS_Store
+*.log
+.env
+.env.local
+.vscode/
+.idea/
+
+# Other
+.cache/
+dist/
+coverage/
+.nyc_output/
+
