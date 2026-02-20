@@ -34,6 +34,14 @@ export function dateToTimestamp(date: string | undefined): number | undefined {
 //   return Math.floor(parsed.getTime() / 1000);
 // }
 
+function safeNumber(n: number | string | undefined): number {
+  if (isNaN(Number(n))) {
+    return 0;
+  }
+
+  return Number(n);
+}
+
 export function canonicalMarketData(market: RawApiMarketData): MarketData {
   const canon: Partial<MarketData> = {};
 
@@ -81,7 +89,7 @@ export function canonicalMarketData(market: RawApiMarketData): MarketData {
   canon.volume1wk = market.volume1wk ?? 0;
   canon.volume1mo = market.volume1mo ?? 0;
   canon.volume1yr = market.volume1yr ?? 0;
-  canon.liquidity = Number(market.liquidity) ?? 0;
+  canon.liquidity = safeNumber(market.liquidity);
 
   return canon as MarketData;
 }
@@ -104,12 +112,12 @@ export function canonicalizeEventData(event: RawApiEventData): EventData {
     markets: event.markets?.map(market => canonicalMarketData(market)) ?? [],
     tags: event.tags,
 
-    volume: Number(event.volume) ?? 0,
+    volume: safeNumber(event.volume),
     volume24hr: event.volume24hr ?? 0,
     volume1wk: event.volume1wk ?? 0,
     volume1mo: event.volume1mo ?? 0,
     volume1yr: event.volume1yr ?? 0,
-    liquidity: Number(event.liquidity) ?? 0,
+    liquidity: safeNumber(event.liquidity),
     openInterest: event.openInterest ?? 0,
     umaResolutionStatus: event.umaResolutionStatus ?? '',
   };
