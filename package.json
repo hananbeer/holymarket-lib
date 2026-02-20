@@ -15,7 +15,7 @@
   },
   "keywords": [],
   "author": "high_byte",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@polymarket/builder-relayer-client": "^0.0.8",
     "@polymarket/builder-signing-sdk": "^0.0.8",
