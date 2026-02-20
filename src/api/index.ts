@@ -1,7 +1,7 @@
-import type { EventData, EventDataWithoutMarkets, RawListEventsQueryParams, RawListMarketsQueryParams, RawApiPublicSearchParams, RawUserPositionsQueryParams, RawUserPosition, RawClosedPosition, RawUserClosedPositionsQueryParams, UserPortfolioValueQueryParams, UserValue, SearchParamsSimple, UserPositionsQueryParams, PublicProfileData, MarketData } from './types';
+import type { EventData, RawListEventsQueryParams, RawListMarketsQueryParams, RawApiPublicSearchParams, RawUserPositionsQueryParams, RawUserPosition, RawClosedPosition, RawUserClosedPositionsQueryParams, UserPortfolioValueQueryParams, UserValue, SearchParamsSimple, UserPositionsQueryParams, PublicProfileData, MarketData, UserTrade, UserTradesQueryParams, RawUserTradesQueryParams } from './types';
 import { canonicalizeEventData, canonicalMarketData } from './helpers';
-import { getRawEventsList, getRawEvent, getRawEventsListPage, getRawSearchEventsPage, getRawPublicProfileByAddress, getRawMarketsList, getRawMarket, getRawMarketsListPage, getRawMarketById, getRawMarketBySlug } from './gamma';
-import { getRawUserPositions, getRawUserClosedPositions, getRawUserPortfolioValue, getRawUserTraded } from './data';
+import { getRawEventsList, getRawEvent, getRawSearchEventsPage, getRawPublicProfileByAddress, getRawMarketsList, getRawMarket, getRawMarketsListPage, getRawMarketById, getRawMarketBySlug } from './gamma';
+import { getRawUserPositions, getRawUserPortfolioValue, getRawUserTraded, getRawUserTrades } from './data';
 
 ///
 /// GAMMA API
@@ -139,6 +139,38 @@ export async function getUserPortfolioValue(params: UserPortfolioValueQueryParam
 export async function getUserTraded(address: string): Promise<number> {
   // basically rename and strip the response to scalar
   const response = await getRawUserTraded(address);
-  return response?.[0].traded;
+  return response.traded;
+}
+
+export async function* getUserTrades(params: UserTradesQueryParams & { batchSize?: number }): AsyncGenerator<UserTrade> {
+  const rawParams: RawUserTradesQueryParams & { batchSize?: number } = {
+    user: params.address,
+    market: params.conditionIds,
+    eventId: params.eventId,
+    limit: params.limit,
+    takerOnly: params.takerOnly,
+    filterType: params.filterType,
+    filterAmount: params.filterAmount,
+    side: params.side,
+    batchSize: params.batchSize,
+  };
+
+  for await (const rawTrade of getRawUserTrades(rawParams)) {
+    const trade: UserTrade = {
+      side: rawTrade.side,
+      asset: rawTrade.asset,
+      conditionId: rawTrade.conditionId,
+      size: rawTrade.size,
+      price: rawTrade.price,
+      timestamp: rawTrade.timestamp,
+      title: rawTrade.title,
+      slug: rawTrade.slug,
+      eventSlug: rawTrade.eventSlug,
+      outcome: rawTrade.outcome,
+      outcomeIndex: rawTrade.outcomeIndex,
+      transactionHash: rawTrade.transactionHash,
+    };
+    yield trade;
+  }
 }
 

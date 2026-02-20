@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { POLYMARKET_DOMAIN } from './types';
-import type { RawMarketPriceHistory, TokenPriceHistory, RawUserPosition, RawUserTrade, RawClosedPosition, RawActivity, RawTraded, RawTraderLeaderboardEntry, RawBuilderLeaderboardEntry, RawBuilderVolumeEntry, UserValue, RawMarketHistoryQueryParams, UserPositionsQueryParams, UserCashBalanceQueryParams, RawUserPositionsQueryParams, RawUserTradesQueryParams, RawUserPortfolioValueQueryParams, RawUserClosedPositionsQueryParams, RawUserActivityQueryParams, RawLeaderboardQueryParams, RawBuilderLeaderboardQueryParams, RawBuilderVolumeQueryParams } from './types';
+import type { RawUserPosition, RawUserTrade, RawClosedPosition, RawActivity, RawTraded, RawTraderLeaderboardEntry, RawBuilderLeaderboardEntry, RawBuilderVolumeEntry, UserValue, RawMarketHistoryQueryParams, UserPositionsQueryParams, UserCashBalanceQueryParams, RawUserPositionsQueryParams, RawUserTradesQueryParams, RawUserPortfolioValueQueryParams, RawUserClosedPositionsQueryParams, RawUserActivityQueryParams, RawLeaderboardQueryParams, RawBuilderLeaderboardQueryParams, RawBuilderVolumeQueryParams } from './types';
 
 let URL_DATA = `https://data-api.${POLYMARKET_DOMAIN}`;
 
@@ -47,13 +47,39 @@ export async function getRawUserTradesPage(params: RawUserTradesQueryParams): Pr
   return get<RawUserTrade[]>(`/trades`, params);
 }
 
-// TODO: yield
 /*
 this endpoint sorts by timestamps descending! so annoying!
-meaning the pagination can be completely messed up
+meaning the pagination can be completely messed up. but the deduping should fix it!
 */
-// export async function* getRawUserTrades(params: RawUserTradesQueryParams & { batchSize?: number }): AsyncGenerator<RawUserTrade> {
-// }
+export async function* getRawUserTrades(params: RawUserTradesQueryParams & { batchSize?: number }): AsyncGenerator<RawUserTrade> {
+  const set = new Set<string>();
+  let offset = 0;
+  const limit = params.limit ?? Infinity;
+
+  while (offset < limit) {
+    const batch = await getRawUserTradesPage({
+      ...params,
+      limit: params.batchSize ?? 150,
+      offset,
+    });
+
+    if (!batch || batch.length === 0) {
+      return;
+    }
+
+    for (const trade of batch) {
+      const key = [trade.transactionHash, trade.asset, trade.size.toString(), trade.price.toString()].join(',');
+      if (set.has(key)) {
+        continue;
+      }
+
+      set.add(key);
+      yield trade;
+    }
+
+    offset += batch.length;
+  }
+}
 
 export async function getRawUserPortfolioValue(params: RawUserPortfolioValueQueryParams): Promise<UserValue[]> {
   return get<UserValue[]>(`/value`, params);

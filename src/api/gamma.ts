@@ -1,6 +1,6 @@
 
 import axios from 'axios';
-import type { RawSeriesQueryParams, RawListEventsQueryParams, RawListMarketsQueryParams, RawApiSearchResults, RawApiEventData, RawApiSeriesData, RawApiMarketData, RawApiPublicProfileData, RawApiPublicSearchParams, SearchParamsSimple, RawApiPublicSearchResponse } from './types';
+import type { RawSeriesQueryParams, RawListEventsQueryParams, RawListMarketsQueryParams, RawApiEventData, RawApiSeriesData, RawApiMarketData, RawApiPublicProfileData, RawApiPublicSearchParams, RawApiPublicSearchResponse } from './types';
 import { POLYMARKET_DOMAIN } from './types';
 
 let URL_GAMMA = `https://gamma-api.${POLYMARKET_DOMAIN}`;

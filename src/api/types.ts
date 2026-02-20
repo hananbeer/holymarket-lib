@@ -243,7 +243,7 @@ export type RawUserPosition = {
 
 export type RawUserTrade = {
   proxyWallet: string;
-  side: string;
+  side: 'BUY' | 'SELL';
   asset: string;
   conditionId: string;
   size: number;
@@ -262,6 +262,21 @@ export type RawUserTrade = {
   profileImageOptimized: string;
   transactionHash: string;
 }
+
+export type UserTrade = {
+  side: 'BUY' | 'SELL';
+  asset: string;
+  conditionId: string;
+  size: number;
+  price: number;
+  timestamp: number;
+  title: string;
+  slug: string;
+  eventSlug: string;
+  outcome: string;
+  outcomeIndex: number;
+  transactionHash: string;
+};
 
 export type RawApiSearchResults = {
   events: RawApiEventData[];
@@ -392,10 +407,21 @@ export type RawMarketHistoryQueryParams = {
 export type RawUserTradesQueryParams = {
   user?: string; // Address (optional)
   market?: string[]; // Condition IDs (Hash64), mutually exclusive with eventId
-  eventId?: number[]; // Event IDs (integers), mutually exclusive with market
+  eventId?: string[]; // Event IDs, mutually exclusive with market
   limit?: number; // Default: 100, Max: 10000
   offset?: number; // Default: 0, Max: 10000
   takerOnly?: boolean; // Default: true
+  filterType?: 'CASH' | 'TOKENS'; // Must be provided together with filterAmount
+  filterAmount?: number; // Min: 0, must be provided together with filterType
+  side?: 'BUY' | 'SELL';
+}
+
+export type UserTradesQueryParams = {
+  address?: string;
+  conditionIds?: string[];
+  eventId?: string[];
+  limit?: number;
+  takerOnly?: boolean;
   filterType?: 'CASH' | 'TOKENS'; // Must be provided together with filterAmount
   filterAmount?: number; // Min: 0, must be provided together with filterType
   side?: 'BUY' | 'SELL';

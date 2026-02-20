@@ -1,8 +1,22 @@
-import { getEvent, getEventsList, getSearchEvents } from './api';
+import { getEvent, getEventsList, getSearchEvents, getUserPortfolioValue } from './api';
 
-import { getUserPositions } from './api';
+import { getUserPositions, getUserTrades, getUserTraded } from './api';
 import { UserPositionsQueryParams } from './api/types';
 // import { getRawEventsList } from './api/gamma';
+import { getRawUserTraded } from './api/data'
+
+getUserPortfolioValue({ address: '0x1880E2b176Fbe2b59F425a8c912970850806381B' }).then(console.log)
+// getUserTraded('0x1880E2b176Fbe2b59F425a8c912970850806381B').then(console.log)
+// getRawUserTraded('0x1880E2b176Fbe2b59F425a8c912970850806381B').then(console.log)
+
+// for await (const trade of getUserTrades({
+//   address: '0x1880E2b176Fbe2b59F425a8c912970850806381B',
+//   limit: 10,
+//   batchSize: 10,
+// })) {
+//   console.log(trade);
+//   console.log('-----\n')
+// }
 
 // console.log('getRawUserPositions')
 // const params: UserPositionsQueryParams = {
@@ -26,18 +40,18 @@ import { UserPositionsQueryParams } from './api/types';
 // }
 
 // console.log('getEventsList')
-for await (const event of getEventsList({
-  active: true,
-  closed: false,
-  order: 'id',
-  ascending: false,
-  limit: 10
-})) {
-  console.log('id:', event.id);
-  console.log('slug:', event.slug);
-  console.log('markets:', event.markets.length);
-  console.log('volume:', event.volume1yr);
-}
+// for await (const event of getEventsList({
+//   active: true,
+//   closed: false,
+//   order: 'id',
+//   ascending: false,
+//   limit: 10
+// })) {
+//   console.log('id:', event.id);
+//   console.log('slug:', event.slug);
+//   console.log('markets:', event.markets.length);
+//   console.log('volume:', event.volume1yr);
+// }
 
 // console.log('getEvent')
 // getEvent('eth-updown-5m-1771676700').then(event => {
