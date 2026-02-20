@@ -124,7 +124,7 @@ export type MarketData = {
   spread?: number;
   acceptingOrders: boolean;
   acceptingOrdersTimestamp?: number;
-  umaResolutionStatuses: string[];
+  umaResolutionStatuses: object;
 
   volume: number;
   liquidity: number;

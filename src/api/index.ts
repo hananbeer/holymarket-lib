@@ -133,7 +133,7 @@ export async function* getUserPositions(params: UserPositionsQueryParams): Async
 export async function getUserPortfolioValue(params: UserPortfolioValueQueryParams): Promise<number | undefined> {
   // basically rename and strip the response to scalar
   const response = await getRawUserPortfolioValue({ user: params.address, markets: params.conditionIds });
-  return response?.[0].value;
+  return response?.[0]?.value;
 }
 
 export async function getUserTraded(address: string): Promise<number> {

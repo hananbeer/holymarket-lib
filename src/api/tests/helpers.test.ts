@@ -221,19 +221,22 @@ describe("dateToTimestamp", () => {
       expect(result).toBeUndefined();
     });
 
-    it("should throw for invalid date string", () => {
+    it("should return undefined for invalid date string", () => {
       const date = "not-a-date";
-      expect(() => dateToTimestamp(date)).toThrow("Invalid date format");
+      const result = dateToTimestamp(date);
+      expect(result).toBeUndefined();
     });
 
-    it("should throw for malformed ISO date", () => {
+    it("should return undefined for malformed ISO date", () => {
       const date = "2024-13-45T99:99:99Z";
-      expect(() => dateToTimestamp(date)).toThrow();
+      const result = dateToTimestamp(date);
+      expect(result).toBeUndefined();
     });
 
-    it("should throw for invalid microseconds that can't be parsed", () => {
+    it("should return undefined for invalid microseconds that can't be parsed", () => {
       const date = "2024-01-15T10:30:45.abcZ";
-      expect(() => dateToTimestamp(date)).toThrow("Invalid date format");
+      const result = dateToTimestamp(date);
+      expect(result).toBeUndefined();
     });
 
     it("should handle date missing Z (may parse as local time)", () => {
