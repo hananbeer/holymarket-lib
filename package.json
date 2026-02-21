@@ -28,7 +28,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "prepare": "pnpm build",
+    "prepare": "pnpm install && pnpm build",
     "test": "vitest",
     "test:run": "vitest run",
     "test:watch": "vitest --watch",
