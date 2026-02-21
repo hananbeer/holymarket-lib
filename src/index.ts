@@ -1,11 +1,5 @@
 import * as api from './api';
-import * as rawGammaApi from './api/gamma';
-import * as rawDataApi from './api/data';
 import * as realtime from './realtime';
+import * as unofficial from './unofficial/price_to_beat';
 
-export default {
-  api,
-  rawGammaApi,
-  rawDataApi,
-  realtime
-}
+export { api, realtime, unofficial };
