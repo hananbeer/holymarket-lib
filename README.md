@@ -184,7 +184,7 @@ pnpm install
 pnpm build
 ```
 
-The compiled output is placed in the `build/` directory, which is included in the npm package.
+The compiled output is placed in the `dist/` directory, which is included in the npm package.
 
 ### Development
 

@@ -21,9 +21,9 @@ vitest.config.ts
 .editorconfig
 
 # Build test files
-build/**/tests/
-build/**/*.test.js
-build/**/*.test.d.ts
+dist/**/tests/
+dist/**/*.test.js
+dist/**/*.test.d.ts
 
 # Development files
 node_modules/
