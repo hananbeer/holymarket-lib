@@ -14,16 +14,6 @@
       "types": "./build/index.d.ts",
       "import": "./build/index.js",
       "default": "./build/index.js"
-    },
-    "./api": {
-      "types": "./build/api/index.d.ts",
-      "import": "./build/api/index.js",
-      "default": "./build/api/index.js"
-    },
-    "./realtime": {
-      "types": "./build/realtime/index.d.ts",
-      "import": "./build/realtime/index.js",
-      "default": "./build/realtime/index.js"
     }
   },
   "scripts": {

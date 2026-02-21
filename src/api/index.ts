@@ -1,6 +1,6 @@
-import * as types from './types';
-import * as gamma from './gamma';
-import * as data from './data';
-import * as api from './api';
+export * as default from './api';
 
-export default { types, api, gamma, data };
+export * from './api';
+export * from './types';
+export * as gamma from './gamma';
+export * as data from './data';
