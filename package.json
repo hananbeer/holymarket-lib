@@ -28,15 +28,11 @@
   "author": "high_byte",
   "license": "MIT",
   "dependencies": {
-    "@polymarket/builder-relayer-client": "^0.0.8",
-    "@polymarket/builder-signing-sdk": "^0.0.8",
     "@polymarket/clob-client": "^5.2.1",
     "@polymarket/real-time-data-client": "^1.4.0",
     "@types/node": "^25.3.0",
     "axios": "^1.13.5",
     "ethers": "^5.7.1",
-    "trilogy": "^2.0.5",
-    "ts-node": "^10.9.2",
     "ws": "^8.19.0"
   },
   "devDependencies": {
@@ -50,6 +46,7 @@
     "tsx": "^4.16.0",
     "typescript": "^5.5.0",
     "typescript-eslint": "^8.54.0",
-    "vitest": "^1.6.1"
+    "vitest": "^1.6.1",
+    "ts-node": "^10.9.2"
   }
 }
