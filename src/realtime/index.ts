@@ -1,5 +1,3 @@
-import * as types from './types';
-import * as channel from './channel';
-import * as pricefeed from './pricefeed';
-
-export default { types, channel, pricefeed };
+export * from './channel';
+export * from './pricefeed';
+export * from './types';

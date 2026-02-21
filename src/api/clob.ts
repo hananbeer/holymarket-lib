@@ -8,7 +8,7 @@ const http = axios.create({
   baseURL: URL_CLOB,
   paramsSerializer: {
     indexes: null,
-  },
+  } as any,
 });
 
 export async function get<T>(url: string, params?: Record<string, any>): Promise<T> {
