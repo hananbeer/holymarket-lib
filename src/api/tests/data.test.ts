@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import axios from "axios";
-import * as dataApi from "../data";
+import * as dataApi from "../data.js";
 import type {
   RawUserPosition,
   RawUserTrade,
@@ -11,7 +11,7 @@ import type {
   RawBuilderLeaderboardEntry,
   RawBuilderVolumeEntry,
   UserValue,
-} from "../types";
+} from "../types.js";
 
 vi.mock("axios", () => {
   const mockAxiosInstance = {

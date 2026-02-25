@@ -5,8 +5,8 @@ import {
   dateToTimestamp,
   canonicalMarketData,
   canonicalizeEventData,
-} from "../helpers";
-import type { RawApiMarketData, RawApiEventData } from "../types";
+} from "../helpers.js";
+import type { RawApiMarketData, RawApiEventData } from "../types.js";
 
 describe("addrToDisplayName", () => {
   describe("happy path", () => {

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { RawMarketPriceHistory, POLYMARKET_DOMAIN, type TokenPriceHistory, type RawMarketHistoryQueryParams } from './types';
+import { RawMarketPriceHistory, POLYMARKET_DOMAIN, type TokenPriceHistory, type RawMarketHistoryQueryParams } from './types.js';
 import { Side } from '@polymarket/clob-client';
 
 let URL_CLOB = `https://clob.${POLYMARKET_DOMAIN}`;

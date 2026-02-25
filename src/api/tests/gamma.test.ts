@@ -1,13 +1,13 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import axios from "axios";
-import * as gammaApi from "../gamma";
+import * as gammaApi from "../gamma.js";
 import type {
   RawApiEventData,
   RawApiSeriesData,
   RawApiMarketData,
   RawApiPublicProfileData,
   RawApiPublicSearchResponse,
-} from "../types";
+} from "../types.js";
 
 vi.mock("axios", () => {
   const mockAxiosInstance = {

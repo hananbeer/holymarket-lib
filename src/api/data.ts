@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { POLYMARKET_DOMAIN } from './types';
-import type { RawUserPosition, RawUserTrade, RawClosedPosition, RawActivity, RawTraded, RawTraderLeaderboardEntry, RawBuilderLeaderboardEntry, RawBuilderVolumeEntry, UserValue, RawMarketHistoryQueryParams, UserPositionsQueryParams, UserCashBalanceQueryParams, RawUserPositionsQueryParams, RawUserTradesQueryParams, RawUserPortfolioValueQueryParams, RawUserClosedPositionsQueryParams, RawUserActivityQueryParams, RawLeaderboardQueryParams, RawBuilderLeaderboardQueryParams, RawBuilderVolumeQueryParams } from './types';
+import { POLYMARKET_DOMAIN } from './types.js';
+import type { RawUserPosition, RawUserTrade, RawClosedPosition, RawActivity, RawTraded, RawTraderLeaderboardEntry, RawBuilderLeaderboardEntry, RawBuilderVolumeEntry, UserValue, RawMarketHistoryQueryParams, UserPositionsQueryParams, UserCashBalanceQueryParams, RawUserPositionsQueryParams, RawUserTradesQueryParams, RawUserPortfolioValueQueryParams, RawUserClosedPositionsQueryParams, RawUserActivityQueryParams, RawLeaderboardQueryParams, RawBuilderLeaderboardQueryParams, RawBuilderVolumeQueryParams } from './types.js';
 
 let URL_DATA = `https://data-api.${POLYMARKET_DOMAIN}`;
 

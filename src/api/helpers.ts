@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import type { RawApiMarketData, RawApiEventData, MarketData, EventData } from './types';
+import type { RawApiMarketData, RawApiEventData, MarketData, EventData } from './types.js';
 
 export function addrToDisplayName(address: string): string {
   const normalizedAddress = ethers.utils.getAddress(address);

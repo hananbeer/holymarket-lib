@@ -1,6 +1,6 @@
 import WebSocket from "ws";
 import { ApiKeyCreds } from "@polymarket/clob-client";
-import { MarketSubscriptionMessage, UserSubscriptionMessage, ChannelMessageRaw, ChannelMessage, parseChannelMessage } from "./types";
+import { MarketSubscriptionMessage, UserSubscriptionMessage, ChannelMessageRaw, ChannelMessage, parseChannelMessage } from "./types.js";
 
 export const MARKET_CHANNEL = "market";
 export const USER_CHANNEL = "user";
